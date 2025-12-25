@@ -5,7 +5,6 @@ return {
 		local alpha = require("alpha")
 		local dashboard = require("alpha.themes.dashboard")
 
-		-- 사용자 지정 ASCII 아트 (SUKGUSS)
 		dashboard.section.header.val = {
 			[[ ███████╗██╗   ██╗██╗  ██╗ ██████╗ ██╗   ██╗███████╗███████╗ ]],
 			[[ ██╔════╝██║   ██║██║ ██╔╝██╔════╝ ██║   ██║██╔════╝██╔════╝ ]],
@@ -15,7 +14,6 @@ return {
 			[[ ╚══════╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚══════╝╚══════╝ ]],
 		}
 
-		-- 메뉴 버튼 설정
 		dashboard.section.buttons.val = {
 			dashboard.button("f", "  파일 찾기", ":Telescope find_files<CR>"),
 			dashboard.button("r", "  최근 파일", ":Telescope oldfiles<CR>"),

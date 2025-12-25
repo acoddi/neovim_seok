@@ -1,8 +1,5 @@
 local mapKey = require("utils.keyMapper").mapKey
 
--- Neotree toggle
-mapKey("<leader>e", ":Neotree toggle<cr>")
-
 -- pane navigation
 mapKey("<C-h>", "<C-w>h") -- Left
 mapKey("<C-j>", "<C-w>j") -- Down
@@ -18,6 +15,3 @@ mapKey("dia", ":lua vim.diagnostic.open_float()<CR>")
 -- indent
 mapKey("<", "<gv", "v")
 mapKey(">", ">gv", "v")
-
--- floaterm
-mapKey("<C-;>", ":FloatermToggle<CR>")

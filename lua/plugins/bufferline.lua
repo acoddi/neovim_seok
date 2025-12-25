@@ -2,13 +2,13 @@ return {
 	"akinsho/bufferline.nvim",
 	version = "*",
 	dependencies = "nvim-tree/nvim-web-devicons",
+	event = "VeryLazy",
+
 	opts = {
 		options = {
 			separator_style = "slant",
-			-- 현재 열려있는 버퍼 이름 옆에 닫기 버튼(x) 표시
 			show_buffer_close_icons = true,
 			show_close_icon = true,
-			-- 사이드바(Neo-tree)가 열렸을 때 버퍼라인 위치 조정
 			offsets = {
 				{
 					filetype = "neo-tree",
@@ -17,14 +17,14 @@ return {
 					text_align = "left",
 				},
 			},
-			-- LSP 에러/경고 아이콘 표시
 			diagnostics = "nvim_lsp",
 		},
 	},
 	keys = {
-		{ "<S-h>", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev buffer" },
-		{ "<S-l>", "<cmd>BufferLineCycleNext<cr>", desc = "Next buffer" },
-		{ "<leader>bp", "<cmd>BufferLinePick<cr>", desc = "Buffer pick" },
-		{ "<leader>bc", "<cmd>BufferLinePickClose<cr>", desc = "Pick buffer to close" },
+		{ "<S-h>", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev buffer, 이전탭으로 이동" },
+		{ "<S-l>", "<cmd>BufferLineCycleNext<cr>", desc = "Next buffer, 다음탭으로 이동" },
+		{ "<leader>bp", "<cmd>BufferLinePick<cr>", desc = "Buffer pick, 탭 선택 이동 키" },
+		{ "<leader>bc", "<cmd>BufferLinePickClose<cr>", desc = "Pick buffer to close, 탭 선택 닫기" },
+		{ "<leader>bd", "<cmd>bdelete<cr>", desc = "Delete current buffer, 현재 탭 닫기" },
 	},
 }

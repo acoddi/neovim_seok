@@ -1,29 +1,61 @@
 return {
-    'kevinhwang91/nvim-ufo',
-    dependencies = 'kevinhwang91/promise-async',
-    config = function()
-        -- Neovim 기본 옵션 설정
-        vim.o.foldcolumn = '0'
-        vim.o.foldlevel = 99
-        vim.o.foldlevelstart = 99
-        vim.o.foldenable = true
+	"kevinhwang91/nvim-ufo",
+	dependencies = "kevinhwang91/promise-async",
 
-        -- LSP folding 기능 활성화 설정
-        local capabilities = vim.lsp.protocol.make_client_capabilities()
-        capabilities.textDocument.foldingRange = {
-            dynamicRegistration = false,
-            lineFoldingOnly = true
-        }
+	keys = {
+		{
+			"zR",
+			function()
+				require("ufo").openAllFolds()
+			end,
+			desc = "모든 접기 펼치기",
+		},
+		{
+			"zM",
+			function()
+				require("ufo").closeAllFolds()
+			end,
+			desc = "모두 접기",
+		},
+		{
+			"zr",
+			function()
+				require("ufo").openFoldsExceptKinds()
+			end,
+			desc = "접기 단계별 펼치기",
+		},
+		{
+			"zm",
+			function()
+				require("ufo").closeFoldsWith()
+			end,
+			desc = "접기 단계별 접기",
+		},
+	},
 
-        -- 설정된 모든 LSP 서버에 capabilities 적용
-        local language_servers = vim.lsp.get_clients()
-        for _, ls in ipairs(language_servers) do
-            require('lspconfig')[ls.name].setup({
-                capabilities = capabilities
-            })
-        end
+	config = function()
+		vim.o.foldcolumn = "1"
+		vim.o.foldlevel = 99
+		vim.o.foldlevelstart = 99
+		vim.o.foldenable = true
 
-        -- nvim-ufo 실행
-        require('ufo').setup()
-    end -- config 함수를 닫는 end
+		-- local capabilities = vim.lsp.protocol.make_client_capabilities()
+		-- capabilities.textDocument.foldingRange = {
+		-- 	dynamicRegistration = false,
+		-- 	lineFoldingOnly = true,
+		-- }
+		--
+		-- local language_servers = vim.lsp.get_clients()
+		-- for _, ls in ipairs(language_servers) do
+		-- 	require("lspconfig")[ls.name].setup({
+		-- 		capabilities = capabilities,
+		-- 	})
+		-- end
+
+		require("ufo").setup({
+			provider_selector = function(bufnr, filetype, buftype)
+				return { "lsp", "indent" }
+			end,
+		})
+	end,
 }

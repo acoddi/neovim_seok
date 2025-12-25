@@ -3,48 +3,59 @@ return {
 		"williamboman/mason.nvim",
 		opts = { ui = { border = "rounded" } },
 	},
+
 	{
 		"williamboman/mason-lspconfig.nvim",
 		dependencies = {
 			"williamboman/mason.nvim",
 			"neovim/nvim-lspconfig",
-			"hrsh7th/cmp-nvim-lsp", -- [추가] 자동 완성을 위해 이 라이브러리가 필요합니다
+			"hrsh7th/cmp-nvim-lsp",
 		},
 		config = function()
-			local mason_lspconfig = require("mason-lspconfig")
+			-- 1. Capabilities 설정
 
-			-- 1. [추가] 자동 완성을 위한 통신 통로(capabilities) 설정
-			-- 이 설정이 들어가야 LSP가 "나 이런 자동 완성 줄 수 있어!"라고 cmp에게 알려줍니다.
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
+			capabilities.textDocument.foldingRange = {
+				dynamicRegistration = false,
+				lineFoldingOnly = true,
+			}
 
-			-- 2. Mason 설치 설정
-			mason_lspconfig.setup({
+			-- 2. Mason 설정
+
+			require("mason").setup()
+			require("mason-lspconfig").setup({
 				ensure_installed = { "clangd", "lua_ls" },
 			})
 
-			-- 3. [미래지향적] 네이티브 설정에 capabilities 추가
-			vim.lsp.config("lua_ls", {
-				capabilities = capabilities, -- [추가]
-				install = {
-					cmd = { "lua-language-server" },
-				},
-				settings = {
-					Lua = {
-						diagnostics = { globals = { "vim" } },
-						workspace = { checkThirdParty = false },
-					},
-				},
-			})
+			-- [중요] 3. Neovim 0.11+ 방식: 설치된 서버를 돌면서 vim.lsp.enable() 호출
+			local installed_servers = require("mason-lspconfig").get_installed_servers()
 
-			vim.lsp.config("clangd", {
-				capabilities = capabilities, -- [추가]
-				install = {
-					cmd = { "clangd" },
-				},
-			})
+			for _, server_name in ipairs(installed_servers) do
+				-- (1) Lua 서버만 특별 대우 (설정 추가)
+				if server_name == "lua_ls" then
+					vim.lsp.config[server_name] = {
+						capabilities = capabilities,
+						settings = {
+							Lua = {
+								diagnostics = { globals = { "vim" } },
+							},
+						},
+					}
 
-			-- 4. 서버 활성화
-			vim.lsp.enable({ "lua_ls", "clangd" })
+				-- (2) Clangd 설정
+				elseif server_name == "clangd" then
+					vim.lsp.config[server_name] = {
+						capabilities = capabilities,
+						cmd = { "clangd", "--offset-encoding=utf-16" },
+					}
+				else
+					vim.lsp.config[server_name] = {
+						capabilities = capabilities,
+					}
+				end
+
+				vim.lsp.enable(server_name)
+			end
 		end,
 	},
 }
