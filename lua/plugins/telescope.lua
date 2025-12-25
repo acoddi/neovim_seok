@@ -6,6 +6,8 @@ return {
 	tag = "0.1.5",
 	dependencies = { "nvim-lua/plenary.nvim" },
 
+	cmd = "Telescope",
+
 	keys = {
 		{ "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "파일 찾기" },
 		{ "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "전체 검색 (Grep)" },
