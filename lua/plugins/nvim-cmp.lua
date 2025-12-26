@@ -1,16 +1,18 @@
 return {
 	"hrsh7th/nvim-cmp",
 	dependencies = {
-		"hrsh7th/cmp-nvim-lsp", -- LSP 소스
-		"hrsh7th/cmp-buffer", -- 현재 버퍼 단어 소스
-		"hrsh7th/cmp-path", -- 파일 경로 소스
-		"L3MON4D3/LuaSnip", -- 스니펫 엔진
-		"saadparwaiz1/cmp_luasnip", -- 스니펫 연결 소스
+		"hrsh7th/cmp-nvim-lsp",
+		"hrsh7th/cmp-buffer",
+		"hrsh7th/cmp-path",
+		"hrsh7th/cmp-cmdline", -- 명령어 모드 완성 소스
+		"L3MON4D3/LuaSnip",
+		"saadparwaiz1/cmp_luasnip",
 	},
 	config = function()
 		local cmp = require("cmp")
 		local luasnip = require("luasnip")
 
+		-- 1. 기본 자동 완성 설정
 		cmp.setup({
 			snippet = {
 				expand = function(args)
@@ -20,10 +22,9 @@ return {
 			mapping = cmp.mapping.preset.insert({
 				["<C-b>"] = cmp.mapping.scroll_docs(-4),
 				["<C-f>"] = cmp.mapping.scroll_docs(4),
-				["<C-Space>"] = cmp.mapping.complete(), -- 수동 완성창 열기
-				["<C-e>"] = cmp.mapping.abort(), -- 취소
-				["<CR>"] = cmp.mapping.confirm({ select = true }), -- 엔터로 선택
-				-- Tab으로 항목 이동
+				["<C-Space>"] = cmp.mapping.complete(),
+				["<C-e>"] = cmp.mapping.abort(),
+				["<CR>"] = cmp.mapping.confirm({ select = true }),
 				["<Tab>"] = cmp.mapping(function(fallback)
 					if cmp.visible() then
 						cmp.select_next_item()
@@ -35,12 +36,33 @@ return {
 				end, { "i", "s" }),
 			}),
 			sources = cmp.config.sources({
-				{ name = "nvim_lsp" }, -- 1순위: LSP (코드 의미 분석)
-				{ name = "luasnip" }, -- 2순위: 스니펫
+				{ name = "nvim_lsp" },
+				{ name = "luasnip" },
 			}, {
-				{ name = "buffer" }, -- 3순위: 현재 파일 내 단어
-				{ name = "path" }, -- 4순위: 경로
+				{ name = "buffer" },
+				{ name = "path" },
 			}),
+		})
+
+		-- 2. / 명령어 (검색) 설정
+		cmp.setup.cmdline({ "/", "?" }, {
+			mapping = cmp.mapping.preset.cmdline(),
+			sources = {
+				{ name = "buffer" },
+			},
+		})
+
+		-- 3. : 명령어 (커맨드라인) 설정
+		-- 여기서 쓸데없는 관련어가 안 나오게 'cmdline' 소스를 지정합니다.
+		cmp.setup.cmdline(":", {
+			mapping = cmp.mapping.preset.cmdline(),
+			sources = cmp.config.sources({
+				{ name = "path" },
+			}, {
+				{ name = "cmdline" },
+			}),
+			-- 이 옵션을 넣으면 입력할 때마다 너무 많은게 뜨는 걸 방지할 수 있습니다.
+			matching = { disallow_symbol_nonprefix_matching = false },
 		})
 	end,
 }
